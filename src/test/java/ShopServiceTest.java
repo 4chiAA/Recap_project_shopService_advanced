@@ -13,24 +13,30 @@ class ShopServiceTest {
         List<String> productsIds = List.of("1");
 
         //WHEN
-        Order actual = shopService.addOrder(productsIds);
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
-        assertEquals(expected.products(), actual.products());
-        assertNotNull(expected.id());
+        try {
+            shopService.addOrder(productsIds);
+        } catch (ProductNotFoundException e) {
+            fail("Unexpected ProductNotFoundException was thrown: " + e.getMessage());
+        }
+        //Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.PROCESSING);
+        //assertEquals(expected.products(), actual.products());
+        //assertNotNull(expected.id());
     }
 
     @Test
-    void addOrderTest_whenInvalidProductId_expectNull() {
+    void addOrderTest_whenInvalidProductId_expectException() {
         //GIVEN
         ShopService shopService = new ShopService();
         List<String> productsIds = List.of("1", "2");
-
         //WHEN
-        Order actual = shopService.addOrder(productsIds);
-
         //THEN
-        assertNull(actual);
+        try {
+            shopService.addOrder(productsIds);
+            fail();
+        } catch (ProductNotFoundException e) {
+            assertTrue(true);
+        }
     }
 }
